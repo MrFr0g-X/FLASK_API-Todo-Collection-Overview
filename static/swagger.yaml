@@ -1,90 +1,109 @@
-swagger: '2.0'
+---
+openapi: 3.0.0
 info:
-  title: To-Do API
-  description: API for managing to-do items
-  version: 1.0.0
-host: localhost:3000
-basePath: /
+  title: FLASK_API Todo Collection
+  version: '1.0.0'
+  description: A simple API to manage to-do items using bearer authentication.
 paths:
   /todos:
     get:
-      summary: Get all To-Do items
+      summary: Get All Todos
+      security:
+        - bearerAuth: []
       responses:
         '200':
           description: A list of to-do items
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/ToDo'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Todo'
     post:
-      summary: Create a new To-Do item
-      parameters:
-        - name: body
-          in: body
-          schema:
-            $ref: '#/definitions/NewToDo'
+      summary: Add New Todo
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewTodo'
       responses:
         '201':
-          description: To-Do item created
-        '400':
-          description: Bad request
+          description: Todo item created
   /todos/{id}:
     get:
-      summary: Get a To-Do item by ID
+      summary: Get Todo by ID
+      security:
+        - bearerAuth: []
       parameters:
         - name: id
           in: path
           required: true
-          type: integer
+          schema:
+            type: string
       responses:
         '200':
-          description: To-Do item found
-          schema:
-            $ref: '#/definitions/ToDo'
-        '404':
-          description: To-Do item not found
+          description: Todo item details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
     put:
-      summary: Update a To-Do item
+      summary: Update Todo
+      security:
+        - bearerAuth: []
       parameters:
         - name: id
           in: path
           required: true
-          type: integer
-        - name: body
-          in: body
           schema:
-            $ref: '#/definitions/NewToDo'
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewTodo'
       responses:
         '200':
-          description: To-Do item updated
-        '404':
-          description: To-Do item not found
+          description: Todo item updated
     delete:
-      summary: Delete a To-Do item
+      summary: Delete Todo
+      security:
+        - bearerAuth: []
       parameters:
         - name: id
           in: path
           required: true
-          type: integer
+          schema:
+            type: string
       responses:
-        '200':
-          description: To-Do item deleted
-definitions:
-  ToDo:
-    type: object
-    properties:
-      id:
-        type: integer
-      title:
-        type: string
-      completed:
-        type: boolean
-  NewToDo:
-    type: object
-    properties:
-      title:
-        type: string
-      completed:
-        type: boolean
-    required:
-      - title
+        '204':
+          description: Todo item deleted
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Todo:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        completed:
+          type: boolean
+    NewTodo:
+      type: object
+      properties:
+        title:
+          type: string
+        completed:
+          type: boolean
+      required:
+        - title
