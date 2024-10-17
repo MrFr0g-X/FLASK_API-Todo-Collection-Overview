@@ -1,0 +1,90 @@
+swagger: '2.0'
+info:
+  title: To-Do API
+  description: API for managing to-do items
+  version: 1.0.0
+host: localhost:3000
+basePath: /
+paths:
+  /todos:
+    get:
+      summary: Get all To-Do items
+      responses:
+        '200':
+          description: A list of to-do items
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ToDo'
+    post:
+      summary: Create a new To-Do item
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/NewToDo'
+      responses:
+        '201':
+          description: To-Do item created
+        '400':
+          description: Bad request
+  /todos/{id}:
+    get:
+      summary: Get a To-Do item by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: To-Do item found
+          schema:
+            $ref: '#/definitions/ToDo'
+        '404':
+          description: To-Do item not found
+    put:
+      summary: Update a To-Do item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/NewToDo'
+      responses:
+        '200':
+          description: To-Do item updated
+        '404':
+          description: To-Do item not found
+    delete:
+      summary: Delete a To-Do item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: To-Do item deleted
+definitions:
+  ToDo:
+    type: object
+    properties:
+      id:
+        type: integer
+      title:
+        type: string
+      completed:
+        type: boolean
+  NewToDo:
+    type: object
+    properties:
+      title:
+        type: string
+      completed:
+        type: boolean
+    required:
+      - title
